@@ -22,7 +22,7 @@ func readData() []noteApp.Note {
 	return notes
 }
 
-func writeData(notes []noteApp.Note) {
+func writeData(notes *[]noteApp.Note) {
 	data, err := json.Marshal(notes)
 
 	if err != nil {
@@ -33,7 +33,6 @@ func writeData(notes []noteApp.Note) {
 }
 
 func AddNote(noteTitle string, noteDescription string) {
-
 	notes := readData()
 
 	note := []noteApp.Note{
@@ -44,10 +43,19 @@ func AddNote(noteTitle string, noteDescription string) {
 
 	notes = append(notes, note...)
 
-	writeData(notes)
+	writeData(&notes)
 
 }
 
 func DeleteAll() {
 	os.WriteFile("data.json", []byte("[]"), 0644)
+}
+
+func DeleteByID(id int) {
+	notes := readData()
+	idx := id - 1
+
+	notes = append(notes[:idx], notes[idx+1:]...)
+
+	writeData(&notes)
 }
