@@ -36,7 +36,7 @@ func AddNote(noteTitle string, noteDescription string) {
 	notes := readData()
 
 	note := []noteApp.Note{
-		{ID: uint(len(notes)) + 1,
+		{ID: len(notes) + 1,
 			Title:       noteTitle,
 			Description: noteDescription},
 	}
@@ -58,4 +58,18 @@ func DeleteByID(id int) {
 	notes = append(notes[:idx], notes[idx+1:]...)
 
 	writeData(&notes)
+}
+
+func ReadNotesID(id int) {
+
+	notes := readData()
+	
+	for _, note := range notes {
+		if note.ID == id {
+			toPrint := fmt.Sprintf("ID: %d \nTitle: '%s' \nDescription: '%s'\n", note.ID, note.Title, note.Description)
+			fmt.Println(toPrint)
+			break
+		}
+	}
+
 }
