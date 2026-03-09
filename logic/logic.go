@@ -47,3 +47,7 @@ func AddNote(noteTitle string, noteDescription string) {
 	writeData(notes)
 
 }
+
+func DeleteAll() {
+	os.WriteFile("data.json", []byte("[]"), 0644)
+}
