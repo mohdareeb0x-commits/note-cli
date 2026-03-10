@@ -1,12 +1,12 @@
 /*
 Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
-	logic "note-cli/logic"
+	"fmt"
 	"github.com/spf13/cobra"
+	logic "note-cli/logic"
 )
 
 // deleteAllCmd represents the deleteAll command
@@ -21,6 +21,9 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		logic.DeleteAll()
+
+		fmt.Println("\033[33mDONE: Deleted All Notes\n\033[0m")
+
 	},
 }
 

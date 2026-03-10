@@ -1,11 +1,12 @@
 /*
 Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
+	"fmt"
 	logic "note-cli/logic"
+
 	"github.com/spf13/cobra"
 )
 
@@ -20,9 +21,18 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+
 		noteTitle, _ := cmd.Flags().GetString("title")
 		noteDescription, _ := cmd.Flags().GetString("description")
-		logic.AddNote(noteTitle, noteDescription)
+		err := logic.AddNote(noteTitle, noteDescription)
+
+		if err != nil {
+			fmt.Println(err, noteTitle)
+			fmt.Println()
+		}
+
+		fmt.Println("\033[32mDONE: Note Added Successfully!\n\033[0m")
+
 	},
 }
 

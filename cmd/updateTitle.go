@@ -1,12 +1,12 @@
 /*
 Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
-	logic "note-cli/logic"
+	"fmt"
 	"github.com/spf13/cobra"
+	logic "note-cli/logic"
 )
 
 // updateTitleCmd represents the updateTitle command
@@ -20,9 +20,17 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+
 		noteID, _ := cmd.Flags().GetInt("id")
 		newTitle, _ := cmd.Flags().GetString("title")
-		logic.UpdateTitle(noteID, newTitle)
+		err := logic.UpdateTitle(noteID, newTitle)
+
+		if err != nil {
+			fmt.Println(err, noteID)
+			fmt.Println()
+		} else {
+			fmt.Println("\033[34mDONE: Updated Title at id:", noteID, "\n\033[0m")
+		}
 	},
 }
 

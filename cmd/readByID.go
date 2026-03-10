@@ -1,12 +1,12 @@
 /*
 Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
-	logic "note-cli/logic"
+	"fmt"
 	"github.com/spf13/cobra"
+	logic "note-cli/logic"
 )
 
 // readByIDCmd represents the readByID command
@@ -20,8 +20,15 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+
 		noteID, _ := cmd.Flags().GetInt("id")
-		logic.ReadNotesID(noteID)
+		err := logic.ReadNotesID(noteID)
+
+		if err != nil {
+			fmt.Println(err, noteID)
+			fmt.Println()
+		}
+
 	},
 }
 

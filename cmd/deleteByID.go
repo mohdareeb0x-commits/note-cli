@@ -1,11 +1,12 @@
 /*
 Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-
 */
 package cmd
 
 import (
+	"fmt"
 	logic "note-cli/logic"
+
 	"github.com/spf13/cobra"
 )
 
@@ -21,7 +22,15 @@ This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
 		noteID, _ := cmd.Flags().GetInt("id")
-		logic.DeleteByID(int(noteID))
+		err := logic.DeleteByID(int(noteID))
+
+		if err != nil {
+			fmt.Println(err, noteID)
+			fmt.Println()
+		}
+
+		fmt.Println("\033[33mDONE: Deleted Note at id:", noteID, "\n\033[0m")
+
 	},
 }
 
