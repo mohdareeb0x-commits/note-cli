@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func readData() []noteModel.Note {
+func ReadData() []noteModel.Note {
 
 	file, err := os.ReadFile("data.json")
 
@@ -23,7 +23,7 @@ func readData() []noteModel.Note {
 	return notes
 }
 
-func writeData(notes *[]noteModel.Note) {
+func WriteData(notes *[]noteModel.Note) {
 	data, err := json.Marshal(notes)
 
 	if err != nil {
@@ -36,10 +36,10 @@ func writeData(notes *[]noteModel.Note) {
 func AddNote(noteTitle string, noteDescription string) error {
 
 	if noteTitle == "" {
-		return customErr.TitleError
+		return &customErr.TitleError{}
 	}
 
-	notes := readData()
+	notes := ReadData()
 
 	var id int
 
@@ -57,7 +57,7 @@ func AddNote(noteTitle string, noteDescription string) error {
 
 	notes = append(notes, note...)
 
-	writeData(&notes)
+	WriteData(&notes)
 
 	return nil
 
@@ -69,14 +69,19 @@ func DeleteAll() {
 
 func DeleteByID(id int) error {
 
-	notes := readData()
+	notes := ReadData()
+
+	if len(notes) == 0 {
+		return &customErr.EmptyNotesErr{}
+	}
 
 	for _, note := range notes {
+		fmt.Println(note)
 
 		if note.ID == id {
 			break
 		} else {
-			return customErr.IDError
+			return &customErr.IDError{}
 		}
 	}
 
@@ -84,14 +89,14 @@ func DeleteByID(id int) error {
 
 	notes = append(notes[:idx], notes[idx+1:]...)
 
-	writeData(&notes)
+	WriteData(&notes)
 
 	return nil
 }
 
 func ReadNotesID(id int) error {
 
-	notes := readData()
+	notes := ReadData()
 
 	for _, note := range notes {
 
@@ -101,7 +106,7 @@ func ReadNotesID(id int) error {
 			break
 
 		} else {
-			return customErr.IDError
+			return &customErr.IDError{}
 		}
 	}
 
@@ -111,11 +116,11 @@ func ReadNotesID(id int) error {
 
 func ReadNotes() error {
 
-	notes := readData()
+	notes := ReadData()
 
 
 	if len(notes) == 0 {
-		return customErr.EmptyNotesErr
+		return &customErr.EmptyNotesErr{}
 	}
 
 	for _, note := range notes {
@@ -124,12 +129,16 @@ func ReadNotes() error {
 	}
 
 	return nil
-	
+
 }
 
 func UpdateDesc(id int, newDesc string) error {
 
-	notes := readData()
+	notes := ReadData()
+
+	if len(notes) == 0 {
+		return &customErr.EmptyNotesErr{}
+	} 
 
 	for i, note := range notes {
 
@@ -138,11 +147,11 @@ func UpdateDesc(id int, newDesc string) error {
 			break
 
 		} else {
-			return customErr.IDError
+			return &customErr.IDError{}
 		}
 	}
 
-	writeData(&notes)
+	WriteData(&notes)
 
 	return nil
 
@@ -150,22 +159,27 @@ func UpdateDesc(id int, newDesc string) error {
 
 func UpdateTitle(id int, newTitle string) error {
 
+	
 	if newTitle == "" {
-		return customErr.TitleError
+		return &customErr.TitleError{}
 	}
-
-	notes := readData()
+	
+	notes := ReadData()
+	
+	if len(notes) == 0 {
+		return &customErr.EmptyNotesErr{}
+	} 
 
 	for i, note := range notes {
 		if note.ID == id {
 			notes[i].Title = newTitle
 			break
 		} else {
-			return customErr.IDError
+			return &customErr.IDError{}
 		}
 	}
 
-	writeData(&notes)
+	WriteData(&notes)
 
 	return nil
 

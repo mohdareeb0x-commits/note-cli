@@ -26,7 +26,7 @@ to quickly create a Cobra application.`,
 		err := logic.UpdateDesc(noteID, newDesc)
 
 		if err != nil {
-			fmt.Println(err, noteID)
+			fmt.Println(err.Error(), noteID)
 			fmt.Println()
 		} else {
 			fmt.Println("\033[34mDONE: Updated Description at id:", noteID, "\n\033[0m")

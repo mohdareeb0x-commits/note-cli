@@ -21,15 +21,16 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
+
 		noteID, _ := cmd.Flags().GetInt("id")
-		err := logic.DeleteByID(int(noteID))
-
+		err := logic.DeleteByID(noteID)
+		
 		if err != nil {
-			fmt.Println(err, noteID)
+			fmt.Println(err.Error(), noteID)
 			fmt.Println()
+		} else {
+			fmt.Println("\033[33mDONE: Deleted Note at id:", noteID, "\n\033[0m")
 		}
-
-		fmt.Println("\033[33mDONE: Deleted Note at id:", noteID, "\n\033[0m")
 
 	},
 }

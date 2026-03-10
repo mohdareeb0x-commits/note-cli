@@ -25,7 +25,7 @@ to quickly create a Cobra application.`,
 		err := logic.ReadNotesID(noteID)
 
 		if err != nil {
-			fmt.Println(err, noteID)
+			fmt.Println(err.Error(), noteID)
 			fmt.Println()
 		}
 

@@ -1,13 +1,30 @@
 package custom
 
 import (
-	"errors"
+	// "fmt"
 )
 
-var IndexError = errors.New("\033[31mERROR: Index out of range\033[0m")
+// var IDError = errors.New("\033[31mERROR: No ID matched\033[0m")
 
-var IDError = errors.New("\033[31mERROR: No ID matched\033[0m")
+// var TitleError = errors.New("\033[31mERROR: Invalid Title\033[0m")
 
-var TitleError = errors.New("\033[31mERROR: Invalid Title\033[0m")
+// var EmptyNotesErr = errors.New("\033[33mNo Notes Created.\033[0m")
+type IDError struct{}
 
-var EmptyNotesErr = errors.New("\033[33mNo Notes Created.\033[0m")
+func (e *IDError) Error() string {
+	return "\033[31mERROR: No ID matched\033[0m"
+}
+
+
+type TitleError struct{}
+
+func (e *TitleError) Error() string {
+	return "\033[31mERROR: Invalid Title\033[0m"
+}
+
+
+type EmptyNotesErr struct{}
+
+func (e *EmptyNotesErr) Error() string {
+	return "\033[33mNo Notes Created.\033[0m"
+}
