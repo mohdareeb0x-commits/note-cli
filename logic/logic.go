@@ -1,10 +1,10 @@
 package logic
 
 import (
+	"os"
+	"fmt"
 	"encoding/json"
 	noteApp "note-cli/model"
-	"fmt"
-	"os"
 )
 
 func readData() []noteApp.Note {
@@ -36,7 +36,7 @@ func AddNote(noteTitle string, noteDescription string) {
 	notes := readData()
 
 	note := []noteApp.Note{
-		{ID: len(notes) + 1,
+		{ID: notes[len(notes) - 1].ID + 1,
 			Title:       noteTitle,
 			Description: noteDescription},
 	}
@@ -66,10 +66,20 @@ func ReadNotesID(id int) {
 	
 	for _, note := range notes {
 		if note.ID == id {
-			toPrint := fmt.Sprintf("ID: %d \nTitle: '%s' \nDescription: '%s'\n", note.ID, note.Title, note.Description)
-			fmt.Println(toPrint)
+			requiredNote := fmt.Sprintf("ID: %d \nTitle: '%s' \nDescription: '%s'\n", note.ID, note.Title, note.Description)
+			fmt.Println(requiredNote)
 			break
 		}
 	}
 
+}
+
+func ReadNotes() {
+
+	notes := readData()
+
+	for _, note := range notes {
+		requiredNote := fmt.Sprintf("ID: %d \nTitle: '%s' \nDescription: '%s'\n", note.ID, note.Title, note.Description)
+		fmt.Println(requiredNote)
+	}
 }
