@@ -94,7 +94,22 @@ func UpdateDesc(id int, newDesc string) {
 			break
 		}
 	}
-	fmt.Println(notes)
+	
+	writeData(&notes)
+
+}
+
+func UpdateTitle(id int, newTitle string) {
+
+	notes := readData()
+	
+	for i, note := range notes {
+		if note.ID == id {
+			notes[i].Title = newTitle
+			break
+		}
+	}
+	
 	writeData(&notes)
 
 }
