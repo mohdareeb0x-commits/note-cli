@@ -1,14 +1,5 @@
-package custom
+package logic
 
-import (
-	// "fmt"
-)
-
-// var IDError = errors.New("\033[31mERROR: No ID matched\033[0m")
-
-// var TitleError = errors.New("\033[31mERROR: Invalid Title\033[0m")
-
-// var EmptyNotesErr = errors.New("\033[33mNo Notes Created.\033[0m")
 type IDError struct{}
 
 func (e *IDError) Error() string {

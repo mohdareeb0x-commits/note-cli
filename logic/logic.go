@@ -3,40 +3,19 @@ package logic
 import (
 	"encoding/json"
 	"fmt"
-	customErr "note-cli/custom"
-	noteModel "note-cli/model"
 	"os"
 )
 
-func ReadData() []noteModel.Note {
-
-	file, err := os.ReadFile("data.json")
-
-	if err != nil {
-		fmt.Println("\033[31mERROR: Error Fetching Data.\033[0m\n", err, "\nCreating 'data.json' ...\nDONE!")
-	}
-
-	var notes []noteModel.Note
-
-	json.Unmarshal(file, &notes)
-
-	return notes
-}
-
-func WriteData(notes *[]noteModel.Note) {
-	data, err := json.Marshal(notes)
-
-	if err != nil {
-		fmt.Println("\033[31mERROR: Error Parsing Data to JSON.\033[0m")
-	}
-
-	os.WriteFile("data.json", data, 0644)
+type Note struct {
+	ID          int    `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
 }
 
 func AddNote(noteTitle string, noteDescription string) error {
 
 	if noteTitle == "" {
-		return &customErr.TitleError{}
+		return &TitleError{}
 	}
 
 	notes := ReadData()
@@ -49,7 +28,7 @@ func AddNote(noteTitle string, noteDescription string) error {
 		id = notes[len(notes)-1].ID + 1
 	}
 
-	note := []noteModel.Note{
+	note := []Note{
 		{ID: id,
 			Title:       noteTitle,
 			Description: noteDescription},
@@ -72,17 +51,23 @@ func DeleteByID(id int) error {
 	notes := ReadData()
 
 	if len(notes) == 0 {
-		return &customErr.EmptyNotesErr{}
+		return &EmptyNotesErr{}
 	}
 
+	var idMatched bool
+
 	for _, note := range notes {
-		fmt.Println(note)
 
 		if note.ID == id {
+			idMatched = true
 			break
 		} else {
-			return &customErr.IDError{}
+			idMatched = false
 		}
+	}
+
+	if !idMatched {
+		return &IDError{}
 	}
 
 	idx := id - 1
@@ -94,9 +79,13 @@ func DeleteByID(id int) error {
 	return nil
 }
 
-func ReadNotesID(id int) error {
+func GetNotes(id int) error {
 
 	notes := ReadData()
+
+	if len(notes) == 0 {
+		return &EmptyNotesErr{}
+	}
 
 	for _, note := range notes {
 
@@ -106,7 +95,7 @@ func ReadNotesID(id int) error {
 			break
 
 		} else {
-			return &customErr.IDError{}
+			return &IDError{}
 		}
 	}
 
@@ -114,13 +103,12 @@ func ReadNotesID(id int) error {
 
 }
 
-func ReadNotes() error {
+func ListNotes() error {
 
 	notes := ReadData()
 
-
 	if len(notes) == 0 {
-		return &customErr.EmptyNotesErr{}
+		return &EmptyNotesErr{}
 	}
 
 	for _, note := range notes {
@@ -132,55 +120,61 @@ func ReadNotes() error {
 
 }
 
-func UpdateDesc(id int, newDesc string) error {
+func ReadData() []Note {
 
-	notes := ReadData()
+	file, err := os.ReadFile("data.json")
 
-	if len(notes) == 0 {
-		return &customErr.EmptyNotesErr{}
-	} 
-
-	for i, note := range notes {
-
-		if note.ID == id {
-			notes[i].Description = newDesc
-			break
-
-		} else {
-			return &customErr.IDError{}
-		}
+	if err != nil {
+		fmt.Println("\033[31mERROR: Error Fetching Data.\033[0m\n", err, "\nCreating 'data.json' ...\nDONE!")
 	}
 
-	WriteData(&notes)
+	var notes []Note
 
-	return nil
+	json.Unmarshal(file, &notes)
 
+	return notes
 }
 
-func UpdateTitle(id int, newTitle string) error {
+func Update(id int, newTitle string, newDesc string) error {
 
-	
 	if newTitle == "" {
-		return &customErr.TitleError{}
+		return &TitleError{}
 	}
-	
+
 	notes := ReadData()
-	
+
 	if len(notes) == 0 {
-		return &customErr.EmptyNotesErr{}
-	} 
+		return &EmptyNotesErr{}
+	}
 
 	for i, note := range notes {
+
 		if note.ID == id {
-			notes[i].Title = newTitle
+			if newDesc == "" {
+				notes[i].Title = newTitle
+
+			} else {
+				notes[i].Title = newTitle
+				notes[i].Description = newDesc
+			}
 			break
+
 		} else {
-			return &customErr.IDError{}
+			return &IDError{}
 		}
 	}
 
 	WriteData(&notes)
 
 	return nil
+}
 
+func WriteData(notes *[]Note) {
+	data, err := json.Marshal(notes)
+
+	if err != nil {
+		fmt.Println("\033[31mERROR: Error Parsing Data to JSON.\033[0m")
+	}
+
+	os.WriteFile("data.json", data, 0644)
 }

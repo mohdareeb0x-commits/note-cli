@@ -1,6 +1,5 @@
 /*
-Copyright © 2026 NAME HERE <EMAIL ADDRESS>
-
+Copyright © 2026 note-cli mohdareeb0x@gmail.com
 */
 package cmd
 
@@ -10,18 +9,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
-
-
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "note-cli",
-	Short: "A brief description of your application",
-	Long: `A longer description that spans multiple lines and likely contains
-examples and usage of using your application. For example:
+	Short: "A CLI tool for managing personal notes",
+	Long: `note-cli is a command-line application for managing personal notes.
+It allows you to add, list, get, update, and delete notes stored in a JSON file.
 
-Cobra is a CLI library for Go that empowers applications.
-This application is a tool to generate the needed files
-to quickly create a Cobra application.`,
+Examples:
+  note-cli add --title "My Note" --description "This is a note"
+  note-cli list
+  note-cli get --id 1
+  note-cli update --id 1 --title "Updated Title"
+  note-cli delete --id 1
+  note-cli delete --a`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
 	// Run: func(cmd *cobra.Command, args []string) { },
@@ -47,5 +48,3 @@ func init() {
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
-
-
