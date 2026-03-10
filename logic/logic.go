@@ -4,10 +4,10 @@ import (
 	"os"
 	"fmt"
 	"encoding/json"
-	noteApp "note-cli/model"
+	noteModel "note-cli/model"
 )
 
-func readData() []noteApp.Note {
+func readData() []noteModel.Note {
 
 	file, err := os.ReadFile("data.json")
 
@@ -15,14 +15,14 @@ func readData() []noteApp.Note {
 		fmt.Println("ERROR: Error Fetching Data.\n", err, "\nCreating 'data.json' ...\nDONE!")
 	}
 
-	var notes []noteApp.Note
+	var notes []noteModel.Note
 
 	json.Unmarshal(file, &notes)
 
 	return notes
 }
 
-func writeData(notes *[]noteApp.Note) {
+func writeData(notes *[]noteModel.Note) {
 	data, err := json.Marshal(notes)
 
 	if err != nil {
@@ -35,7 +35,7 @@ func writeData(notes *[]noteApp.Note) {
 func AddNote(noteTitle string, noteDescription string) {
 	notes := readData()
 
-	note := []noteApp.Note{
+	note := []noteModel.Note{
 		{ID: notes[len(notes) - 1].ID + 1,
 			Title:       noteTitle,
 			Description: noteDescription},
@@ -82,4 +82,19 @@ func ReadNotes() {
 		requiredNote := fmt.Sprintf("ID: %d \nTitle: '%s' \nDescription: '%s'\n", note.ID, note.Title, note.Description)
 		fmt.Println(requiredNote)
 	}
+}
+
+func UpdateDesc(id int, newDesc string) {
+
+	notes := readData()
+	
+	for i, note := range notes {
+		if note.ID == id {
+			notes[i].Description = newDesc
+			break
+		}
+	}
+	fmt.Println(notes)
+	writeData(&notes)
+
 }
