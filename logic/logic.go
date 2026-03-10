@@ -137,10 +137,6 @@ func ReadData() []Note {
 
 func Update(id int, newTitle string, newDesc string) error {
 
-	if newTitle == "" {
-		return &TitleError{}
-	}
-
 	notes := ReadData()
 
 	if len(notes) == 0 {
@@ -153,6 +149,9 @@ func Update(id int, newTitle string, newDesc string) error {
 			if newDesc == "" {
 				notes[i].Title = newTitle
 
+			} else if newTitle == "" {
+				notes[i].Description = newDesc
+				
 			} else {
 				notes[i].Title = newTitle
 				notes[i].Description = newDesc
