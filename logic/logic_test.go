@@ -3,10 +3,15 @@ package logic
 import (
 	"os"
 	"testing"
+	"fmt"
 )
 
 func clearDataFile(t *testing.T) {
-	if err := os.WriteFile("data.json", []byte("[]"), 0644); err != nil {
+	homeDir, _ := os.UserHomeDir()
+
+	path := fmt.Sprintf("%s/data.json", homeDir)
+
+	if err := os.WriteFile(path, []byte("[]"), 0644); err != nil {
 		t.Fatalf("unable to reset data file: %v", err)
 	}
 }

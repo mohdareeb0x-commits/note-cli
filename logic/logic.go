@@ -43,7 +43,11 @@ func AddNote(noteTitle string, noteDescription string) error {
 }
 
 func DeleteAll() {
-	os.WriteFile("data.json", []byte("[]"), 0644)
+	homeDir, _ := os.UserHomeDir()
+
+	path := fmt.Sprintf("%s/data.json", homeDir)
+
+	os.WriteFile(path, []byte("[]"), 0644)
 }
 
 func DeleteByID(id int) error {
@@ -130,7 +134,11 @@ func ListNotes() error {
 
 func ReadData() []Note {
 
-	file, err := os.ReadFile("data.json")
+	homeDir, _ := os.UserHomeDir()
+
+	path := fmt.Sprintf("%s/data.json", homeDir)
+
+	file, err := os.ReadFile(path)
 
 	if err != nil {
 		fmt.Println("\033[31mERROR: Error Fetching Data.\033[0m\n", err, "\nCreating 'data.json' ...\nDONE!")
@@ -184,11 +192,16 @@ func Update(id int, newTitle string, newDesc string) error {
 }
 
 func WriteData(notes *[]Note) {
+
+	homeDir, _ := os.UserHomeDir()
+
+	path := fmt.Sprintf("%s/data.json", homeDir)
+
 	data, err := json.Marshal(notes)
 
 	if err != nil {
 		fmt.Println("\033[31mERROR: Error Parsing Data to JSON.\033[0m")
 	}
 
-	os.WriteFile("data.json", data, 0644)
+	os.WriteFile(path, data, 0644)
 }
