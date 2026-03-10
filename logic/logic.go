@@ -87,16 +87,24 @@ func GetNotes(id int) error {
 		return &EmptyNotesErr{}
 	}
 
+	var idMatched bool
+
 	for _, note := range notes {
 
 		if note.ID == id {
 			requiredNote := fmt.Sprintf("ID: %d \nTitle: '%s' \nDescription: '%s'\n", note.ID, note.Title, note.Description)
 			fmt.Println(requiredNote)
+			idMatched = true
 			break
 
 		} else {
-			return &IDError{}
+			idMatched = false
 		}
+	}
+
+	if !idMatched {
+		return &IDError{}
+
 	}
 
 	return nil
@@ -143,24 +151,31 @@ func Update(id int, newTitle string, newDesc string) error {
 		return &EmptyNotesErr{}
 	}
 
+	var idMatched bool
+
 	for i, note := range notes {
 
 		if note.ID == id {
-			if newDesc == "" {
+			if newDesc == "" && newTitle != "" {
 				notes[i].Title = newTitle
 
-			} else if newTitle == "" {
+			} else if newTitle == "" && newDesc != "" {
 				notes[i].Description = newDesc
-				
+
 			} else {
 				notes[i].Title = newTitle
 				notes[i].Description = newDesc
 			}
+			idMatched = true
 			break
 
 		} else {
-			return &IDError{}
+			idMatched = false
 		}
+	}
+
+	if !idMatched {
+		return &IDError{}
 	}
 
 	WriteData(&notes)
