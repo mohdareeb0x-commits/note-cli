@@ -66,12 +66,12 @@ Each command accepts specific flags as described in the examples above. Running 
 ## Project Structure
 
 ```
-cmd/            # CLI command definitions
-custom/         # Custom error types
-logic/          # Core business logic for note operations
-model/          # Data model definitions
-testing/        # Unit tests for logic functions
+cmd/            # Subcommands implemented with Cobra (add.go, delete.go, etc.)
+logic/          # Core business logic and unit tests (logic.go, logic_test.go)
 main.go         # Application entry point
+go.mod          # Go module definition
+LICENSE         # Project license
+README.md       # Project documentation (this file)
 ```
 
 ---
