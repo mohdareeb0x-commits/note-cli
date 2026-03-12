@@ -27,7 +27,7 @@ Example:
 			fmt.Println(err.Error())
 			fmt.Println()
 		} else {
-			fmt.Println("\033[34mDONE: All Notes Readed.\n\033[0m")
+			fmt.Println("\033[34mDONE: All Notes Listed.\n\033[0m")
 		}
 
 	},

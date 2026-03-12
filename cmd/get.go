@@ -19,6 +19,7 @@ The note's ID, title, and description will be printed to the console.
 
 Example:
   note-cli get --id 1`,
+
 	Run: func(cmd *cobra.Command, args []string) {
 
 		noteID, _ := cmd.Flags().GetInt("id")
