@@ -42,12 +42,16 @@ func AddNote(noteTitle string, noteDescription string) error {
 
 }
 
-func DeleteAll() {
-	homeDir, _ := os.UserHomeDir()
+func DeleteAll() error {
+	notes := ReadData()
 
-	path := fmt.Sprintf("%s/data.json", homeDir)
+	if len(notes) == 0 {
+		return &EmptyNotesErr{}
+	}
 
-	os.WriteFile(path, []byte("[]"), 0644)
+	os.WriteFile(GetPath(), []byte("[]"), 0644)
+
+	return nil
 }
 
 func DeleteByID(id int) error {
@@ -118,6 +122,18 @@ func GetNotes(id int) error {
 
 }
 
+func GetPath() string {
+	homeDir, err := os.UserHomeDir()
+
+	if err != nil {
+		fmt.Println("\033[31mERROR: Unable to get Home directory\033[0m")
+	}
+
+	path := fmt.Sprintf("%s/data.json", homeDir)
+
+	return path
+}
+
 func ListNotes() error {
 
 	notes := ReadData()
@@ -137,11 +153,7 @@ func ListNotes() error {
 
 func ReadData() []Note {
 
-	homeDir, _ := os.UserHomeDir()
-
-	path := fmt.Sprintf("%s/data.json", homeDir)
-
-	file, err := os.ReadFile(path)
+	file, err := os.ReadFile(GetPath())
 
 	if err != nil {
 		fmt.Println("\033[31mERROR: Error Fetching Data.\033[0m\n", err, "\nCreating 'data.json' ...\nDONE!")
@@ -196,15 +208,11 @@ func Update(id int, newTitle string, newDesc string) error {
 
 func WriteData(notes *[]Note) {
 
-	homeDir, _ := os.UserHomeDir()
-
-	path := fmt.Sprintf("%s/data.json", homeDir)
-
 	data, err := json.Marshal(notes)
 
 	if err != nil {
 		fmt.Println("\033[31mERROR: Error Parsing Data to JSON.\033[0m")
 	}
 
-	os.WriteFile(path, data, 0644)
+	os.WriteFile(GetPath(), data, 0644)
 }

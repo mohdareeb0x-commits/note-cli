@@ -27,8 +27,16 @@ Examples:
 		noteID, _ := cmd.Flags().GetInt("id")
 
 		if aFlag {
-			logic.DeleteAll()
-			fmt.Println("\033[33mDONE: Deleted All Notes\n\033[0m")
+			err := logic.DeleteAll()
+
+			if err != nil {
+				fmt.Println(err.Error())
+				fmt.Println()
+
+			} else {
+				fmt.Println("\033[33mDONE: Deleted All Notes\n\033[0m")
+			}
+
 
 		} else {
 			err := logic.DeleteByID(noteID)
@@ -36,6 +44,7 @@ Examples:
 			if err != nil {
 				fmt.Println(err.Error(), noteID)
 				fmt.Println()
+
 			} else {
 				fmt.Println("\033[33mDONE: Deleted Note at id:", noteID, "\n\033[0m")
 			}
