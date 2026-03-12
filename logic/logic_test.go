@@ -27,7 +27,8 @@ func TestAddNote(t *testing.T) {
 		t.Fatalf("AddNote returned unexpected error: %v", err)
 	}
 
-	notes := ReadData()
+	notes, _ := ReadData()
+
 
 	if len(notes) == 0 {
 		t.Errorf("expected at least one note after AddNote")
@@ -53,7 +54,8 @@ func TestDeleteByID(t *testing.T) {
 		t.Fatalf("DeleteByID returned error: %v", err)
 	}
 
-	notes := ReadData()
+	notes, _ := ReadData()
+
 	if len(notes) != 0 {
 		t.Errorf("expected file to be empty after DeleteByID, got %d notes", len(notes))
 	}
@@ -67,7 +69,9 @@ func TestDeleteAll(t *testing.T) {
 	}
 
 	DeleteAll()
-	notes := ReadData()
+
+	notes, _ := ReadData()
+
 	if len(notes) != 0 {
 		t.Errorf("expected zero notes after DeleteAll, got %d", len(notes))
 	}
@@ -80,7 +84,7 @@ func TestGetNotes(t *testing.T) {
 	}
 
 	testID := 1
-	err := GetNotes(testID)
+	_, err := GetNotes(testID)
 
 	if err != nil {
 		t.Fatalf("GetNotes returned unexpected error: %v", err)
@@ -93,7 +97,7 @@ func TestListNotes(t *testing.T) {
 		t.Fatalf("setup AddNote failed: %v", err)
 	}
 
-	err := ListNotes()
+	_, err := ListNotes()
 	if err != nil {
 		t.Fatalf("ListNotes returned unexpected error: %v", err)
 	}
@@ -114,7 +118,8 @@ func TestUpdate(t *testing.T) {
 		t.Fatalf("Update returned unexpected error: %v", err)
 	}
 
-	notes := ReadData()
+	notes, _ := ReadData()
+
 	if len(notes) == 0 {
 		t.Fatalf("no notes found after update")
 	}

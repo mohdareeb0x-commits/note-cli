@@ -23,11 +23,14 @@ Example:
 	Run: func(cmd *cobra.Command, args []string) {
 
 		noteID, _ := cmd.Flags().GetInt("id")
-		err := logic.GetNotes(noteID)
+		notes, err := logic.GetNotes(noteID)
 
 		if err != nil {
 			fmt.Println(err.Error())
 			fmt.Println()
+			
+		} else {
+			fmt.Println(notes)
 		}
 
 	},

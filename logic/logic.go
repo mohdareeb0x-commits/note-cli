@@ -2,6 +2,7 @@ package logic
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 )
@@ -18,7 +19,11 @@ func AddNote(noteTitle string, noteDescription string) error {
 		return &TitleError{}
 	}
 
-	notes := ReadData()
+	notes, err := ReadData()
+
+	if err != nil {
+		return err
+	}
 
 	var id int
 
@@ -36,27 +41,46 @@ func AddNote(noteTitle string, noteDescription string) error {
 
 	notes = append(notes, note...)
 
-	WriteData(&notes)
+	err = WriteData(notes)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 
 }
 
 func DeleteAll() error {
-	notes := ReadData()
+
+	notes, err := ReadData()
+
+	if err != nil {
+		return err
+	}
 
 	if len(notes) == 0 {
 		return &EmptyNotesErr{}
 	}
 
-	os.WriteFile(GetPath(), []byte("[]"), 0644)
+	path, err := GetPath()
+
+	if err != nil {
+		return err
+	}
+
+	os.WriteFile(path, []byte("[]"), 0644)
 
 	return nil
 }
 
 func DeleteByID(id int) error {
 
-	notes := ReadData()
+	notes, err := ReadData()
+
+	if err != nil {
+		return err
+	}
 
 	if len(notes) == 0 {
 		return &EmptyNotesErr{}
@@ -85,26 +109,35 @@ func DeleteByID(id int) error {
 		}
 	}
 
-	WriteData(&notes)
+	err = WriteData(notes)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
 
-func GetNotes(id int) error {
+func GetNotes(id int) (string, error) {
 
-	notes := ReadData()
+	notes, err := ReadData()
+
+	if err != nil {
+		return "", err
+	}
 
 	if len(notes) == 0 {
-		return &EmptyNotesErr{}
+		return "", &EmptyNotesErr{}
 	}
 
 	var idMatched bool
+	var requiredNote string
 
 	for _, note := range notes {
 
 		if note.ID == id {
-			requiredNote := fmt.Sprintf("ID: %d \nTitle: '%s' \nDescription: '%s'\n", note.ID, note.Title, note.Description)
-			fmt.Println(requiredNote)
+			requiredNote = fmt.Sprintf("ID: %d \nTitle: '%s' \nDescription: '%s'\n", note.ID, note.Title, note.Description)
+
 			idMatched = true
 			break
 
@@ -114,61 +147,84 @@ func GetNotes(id int) error {
 	}
 
 	if !idMatched {
-		return &IDError{}
+		return "", &IDError{}
 
 	}
 
-	return nil
+	return requiredNote, nil
 
 }
 
-func GetPath() string {
+func GetPath() (string, error) {
 	homeDir, err := os.UserHomeDir()
 
 	if err != nil {
-		fmt.Println("\033[31mERROR: Unable to get Home directory\033[0m")
+		return "", errors.New("\033[31mERROR: Unable to get Home directory\033[0m")
 	}
 
 	path := fmt.Sprintf("%s/data.json", homeDir)
 
-	return path
+	return path, nil
 }
 
-func ListNotes() error {
+func ListNotes() (string, error) {
 
-	notes := ReadData()
-
-	if len(notes) == 0 {
-		return &EmptyNotesErr{}
-	}
-
-	for _, note := range notes {
-		requiredNote := fmt.Sprintf("ID: %d \nTitle: '%s' \nDescription: '%s'\n", note.ID, note.Title, note.Description)
-		fmt.Println(requiredNote)
-	}
-
-	return nil
-
-}
-
-func ReadData() []Note {
-
-	file, err := os.ReadFile(GetPath())
+	notes, err := ReadData()
 
 	if err != nil {
-		fmt.Println("\033[31mERROR: Error Fetching Data.\033[0m\n", err, "\nCreating 'data.json' ...\nDONE!")
+		return "", err
+	}
+
+	if len(notes) == 0 {
+		return "", &EmptyNotesErr{}
+	}
+
+	var noteList string
+
+	for _, note := range notes {
+		noteList += fmt.Sprintf("ID: %d \nTitle: '%s' \nDescription: '%s'\n\n", note.ID, note.Title, note.Description)
+		
+	}
+
+	return noteList, nil
+
+}
+
+func ReadData() ([]Note, error) {
+
+	path, err := GetPath()
+
+	if err != nil {
+		return nil, err
+	}
+
+	file, err := os.ReadFile(path)
+
+	if err != nil {
+		_, ierr := os.Create(path)
+		
+		if ierr != nil {
+			return nil, err
+		}
+		newErr := fmt.Sprintf("\033[31mERROR: Error Fetching Data.\033[0m\n %s \nCreating 'data.json' .....\nDONE!", err.Error())
+
+		return nil, errors.New(newErr)
 	}
 
 	var notes []Note
 
 	json.Unmarshal(file, &notes)
 
-	return notes
+	return notes, nil
 }
 
 func Update(id int, newTitle string, newDesc string) error {
 
-	notes := ReadData()
+	notes, err := ReadData()
+
+	if err != nil {
+		return err
+	}
 
 	if len(notes) == 0 {
 		return &EmptyNotesErr{}
@@ -201,18 +257,30 @@ func Update(id int, newTitle string, newDesc string) error {
 		return &IDError{}
 	}
 
-	WriteData(&notes)
+	err = WriteData(notes)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
 
-func WriteData(notes *[]Note) {
+func WriteData(notes []Note) error {
 
-	data, err := json.Marshal(notes)
+	data, err := json.MarshalIndent(notes, "", " ")
 
 	if err != nil {
-		fmt.Println("\033[31mERROR: Error Parsing Data to JSON.\033[0m")
+		return errors.New("\033[31mERROR: Error Parsing Data to JSON.\033[0m")
 	}
 
-	os.WriteFile(GetPath(), data, 0644)
+	path, err := GetPath()
+
+	if err != nil {
+		return err
+	}
+
+	os.WriteFile(path, data, 0644)
+
+	return nil
 }
