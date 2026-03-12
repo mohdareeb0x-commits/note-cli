@@ -74,9 +74,12 @@ func DeleteByID(id int) error {
 		return &IDError{}
 	}
 
-	idx := id - 1
-
-	notes = append(notes[:idx], notes[idx+1:]...)
+	for i, note := range notes {
+		if note.ID == id {
+			notes = append(notes[:i], notes[i+1:]...)
+			break
+		}
+	}
 
 	WriteData(&notes)
 
