@@ -48,7 +48,7 @@ Examples:
 				fmt.Println()
 
 			} else {
-				fmt.Println("\033[33mDONE: Deleted Note at id:", noteID, "\n\033[0m")
+				fmt.Println("\n\033[33mDONE: Deleted Note at id:", noteID, "\n\033[0m")
 			}
 		}
 

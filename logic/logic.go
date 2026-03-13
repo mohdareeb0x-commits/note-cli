@@ -2,10 +2,10 @@ package logic
 
 import (
 	"encoding/json"
-	"path/filepath"
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 type Note struct {
@@ -77,7 +77,7 @@ func DeleteAll() error {
 	return nil
 }
 
-// Note deletion by ID logic 
+// Note deletion by ID logic
 func DeleteByID(id int) error {
 
 	notes, err := ReadData()
@@ -92,10 +92,10 @@ func DeleteByID(id int) error {
 
 	var idMatched bool
 
-	for _, note := range notes {
-
+	for i, note := range notes {
 		if note.ID == id {
 			idMatched = true
+			notes = append(notes[:i], notes[i+1:]...)
 			break
 		} else {
 			idMatched = false
@@ -104,13 +104,6 @@ func DeleteByID(id int) error {
 
 	if !idMatched {
 		return &IDError{}
-	}
-
-	for i, note := range notes {
-		if note.ID == id {
-			notes = append(notes[:i], notes[i+1:]...)
-			break
-		}
 	}
 
 	err = WriteData(notes)
@@ -168,8 +161,8 @@ func GetPath() (string, error) {
 		return "", errors.New("\033[31mERROR: Unable to get Home directory\033[0m")
 	}
 
-    dir := filepath.Join(homeDir, "note-cli")
-	
+	dir := filepath.Join(homeDir, "note-cli")
+
 	_, err = os.Stat(dir)
 
 	if os.IsNotExist(err) {
@@ -232,12 +225,16 @@ func ReadData() ([]Note, error) {
 
 	var notes []Note
 
-	json.Unmarshal(file, &notes)
+	err = json.Unmarshal(file, &notes)
+
+	if err != nil {
+		return nil, err
+	}
 
 	return notes, nil
 }
 
-// Note update logic 
+// Note update logic
 func Update(id int, newTitle string, newDesc string) error {
 
 	notes, err := ReadData()
@@ -301,7 +298,11 @@ func WriteData(notes []Note) error {
 		return err
 	}
 
-	os.WriteFile(path, data, 0644)
+	err = os.WriteFile(path, data, 0644)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
