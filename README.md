@@ -70,7 +70,6 @@ cmd/            # Subcommands implemented with Cobra (add.go, delete.go, etc.)
 logic/          # Core business logic and unit tests (logic.go, logic_test.go)
 main.go         # Application entry point
 go.mod          # Go module definition
-LICENSE         # Project license
 README.md       # Project documentation (this file)
 ```
 
