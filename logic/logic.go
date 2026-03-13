@@ -168,7 +168,7 @@ func GetPath() (string, error) {
 		return "", errors.New("\033[31mERROR: Unable to get Home directory\033[0m")
 	}
 
-    dir := filepath.Join(homeDir, "/note-cli")
+    dir := filepath.Join(homeDir, "note-cli")
 	
 	_, err = os.Stat(dir)
 
