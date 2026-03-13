@@ -26,11 +26,11 @@ Example:
 		err := logic.AddNote(noteTitle, noteDescription)
 
 		if err != nil {
-			fmt.Println(err.Error(), noteTitle)
-			fmt.Println()
-		}
+			fmt.Println(err.Error())
 
-		fmt.Println("\033[32mDONE: Note Added Successfully!\n\033[0m")
+		} else {
+			fmt.Println("\n\033[32mDONE: Note Added Successfully!\n\033[0m")
+		}
 
 	},
 }

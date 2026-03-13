@@ -29,6 +29,7 @@ Examples:
 		err := logic.Update(noteID, newTitle, newDesc)
 
 		if err != nil {
+			fmt.Println()
 			fmt.Println(err.Error())
 			fmt.Println()
 		} else {

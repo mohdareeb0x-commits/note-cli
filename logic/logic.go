@@ -2,6 +2,7 @@ package logic
 
 import (
 	"encoding/json"
+	"path/filepath"
 	"errors"
 	"fmt"
 	"os"
@@ -13,6 +14,7 @@ type Note struct {
 	Description string `json:"description"`
 }
 
+// Note addition logic
 func AddNote(noteTitle string, noteDescription string) error {
 
 	if noteTitle == "" {
@@ -51,6 +53,7 @@ func AddNote(noteTitle string, noteDescription string) error {
 
 }
 
+// Note deletion logic
 func DeleteAll() error {
 
 	notes, err := ReadData()
@@ -74,6 +77,7 @@ func DeleteAll() error {
 	return nil
 }
 
+// Note deletion by ID logic 
 func DeleteByID(id int) error {
 
 	notes, err := ReadData()
@@ -118,6 +122,7 @@ func DeleteByID(id int) error {
 	return nil
 }
 
+// Get notes logic
 func GetNotes(id int) (string, error) {
 
 	notes, err := ReadData()
@@ -155,6 +160,7 @@ func GetNotes(id int) (string, error) {
 
 }
 
+// Get path logic
 func GetPath() (string, error) {
 	homeDir, err := os.UserHomeDir()
 
@@ -162,11 +168,23 @@ func GetPath() (string, error) {
 		return "", errors.New("\033[31mERROR: Unable to get Home directory\033[0m")
 	}
 
-	path := fmt.Sprintf("%s/data.json", homeDir)
+    dir := filepath.Join(homeDir, "/note-cli")
+	
+	_, err = os.Stat(dir)
+
+	if os.IsNotExist(err) {
+		err := os.Mkdir(dir, 0755)
+		if err != nil {
+			return "", err
+		}
+	}
+
+	path := fmt.Sprintf("%s/data.json", dir)
 
 	return path, nil
 }
 
+// List notes logic
 func ListNotes() (string, error) {
 
 	notes, err := ReadData()
@@ -182,14 +200,15 @@ func ListNotes() (string, error) {
 	var noteList string
 
 	for _, note := range notes {
-		noteList += fmt.Sprintf("ID: %d \nTitle: '%s' \nDescription: '%s'\n\n", note.ID, note.Title, note.Description)
-		
+		noteList += fmt.Sprintf("\nID: %d \nTitle: '%s' \nDescription: '%s'\n", note.ID, note.Title, note.Description)
+
 	}
 
 	return noteList, nil
 
 }
 
+// Data reading logic
 func ReadData() ([]Note, error) {
 
 	path, err := GetPath()
@@ -202,11 +221,11 @@ func ReadData() ([]Note, error) {
 
 	if err != nil {
 		_, ierr := os.Create(path)
-		
+
 		if ierr != nil {
 			return nil, err
 		}
-		newErr := fmt.Sprintf("\033[31mERROR: Error Fetching Data.\033[0m\n %s \nCreating 'data.json' .....\nDONE!", err.Error())
+		newErr := fmt.Sprintf("\n\033[31mERROR: Error Fetching Data.\033[0m: %s \nCreating 'data.json'.....\nDONE!\n\033[33mAdd Note again.\n\033[0m", err.Error())
 
 		return nil, errors.New(newErr)
 	}
@@ -218,6 +237,7 @@ func ReadData() ([]Note, error) {
 	return notes, nil
 }
 
+// Note update logic 
 func Update(id int, newTitle string, newDesc string) error {
 
 	notes, err := ReadData()
@@ -266,6 +286,7 @@ func Update(id int, newTitle string, newDesc string) error {
 	return nil
 }
 
+// Data writing logic
 func WriteData(notes []Note) error {
 
 	data, err := json.MarshalIndent(notes, "", " ")

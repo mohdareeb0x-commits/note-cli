@@ -1,5 +1,6 @@
 package logic
 
+
 type IDError struct{}
 
 func (e *IDError) Error() string {

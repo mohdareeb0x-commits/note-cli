@@ -26,6 +26,7 @@ Example:
 		notes, err := logic.GetNotes(noteID)
 
 		if err != nil {
+			fmt.Println()
 			fmt.Println(err.Error())
 			fmt.Println()
 			

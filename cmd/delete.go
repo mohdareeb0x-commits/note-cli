@@ -30,11 +30,12 @@ Examples:
 			err := logic.DeleteAll()
 
 			if err != nil {
+				fmt.Println()
 				fmt.Println(err.Error())
 				fmt.Println()
 
 			} else {
-				fmt.Println("\033[33mDONE: Deleted All Notes\n\033[0m")
+				fmt.Println("\n\033[33mDONE: Deleted All Notes\n\033[0m")
 			}
 
 
@@ -42,7 +43,8 @@ Examples:
 			err := logic.DeleteByID(noteID)
 
 			if err != nil {
-				fmt.Println(err.Error(), noteID)
+				fmt.Println()
+				fmt.Println(err.Error())
 				fmt.Println()
 
 			} else {

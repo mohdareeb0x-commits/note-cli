@@ -24,10 +24,12 @@ Example:
 		noteList, err := logic.ListNotes()
 
 		if err != nil {
+			fmt.Println()
 			fmt.Println(err.Error())
 			fmt.Println()
+			
 		} else {
-			fmt.Print(noteList)
+			fmt.Println(noteList)
 			fmt.Println("\033[34mDONE: All Notes Listed.\n\033[0m")
 		}
 
